@@ -142,6 +142,14 @@ while True:
 
 
 
+
+
+
+
+    if user_input == "exit":
+        print("See you later!")
         break
 
+    index = int(user_input)
+    print(animals[index])
 
