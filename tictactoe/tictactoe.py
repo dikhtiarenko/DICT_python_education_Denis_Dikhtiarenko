@@ -1,37 +1,53 @@
 cells = input("Enter cells: ")
 
-# Вывод игрового поля
-print("---------")
-print(f"| {cells[0]} {cells[1]} {cells[2]} |")
-print(f"| {cells[3]} {cells[4]} {cells[5]} |")
-print(f"| {cells[6]} {cells[7]} {cells[8]} |")
-print("---------")
 
-# Подсчет количества X, 0 и пустых клеток
-x_count = cells.count('X')
-o_count = cells.count('O')
-empty_count = cells.count('_')
+# Функция для вывода игрового поля
+def print_field(c):
+    print("---------")
+    print(f"| {c[0]} {c[1]} {c[2]} |")
+    print(f"| {c[3]} {c[4]} {c[5]} |")
+    print(f"| {c[6]} {c[7]} {c[8]} |")
+    print("---------")
 
-# Проверка возможных победных линий
-def check_win(char):
-    wins = [
-        (0, 1, 2), (3, 4, 5), (6, 7, 8), # горизонтали
-        (0, 3, 6), (1, 4, 7), (2, 5, 8), # вертикали
-        (0, 4, 8), (2, 4, 6)             # диагонали
-    ]
-    return any(cells[a] == char and cells[b] == char and cells[c] == char for a, b, c in wins)
 
-x_wins = check_win('X')
-o_wins = check_win('0')
+# Выводим начальное поле
+print_field(cells)
 
-# Логика определения состояния игры
-if abs(x_count - o_count) >= 2 or (x_wins and o_wins):
-    print("Impossible")
-elif x_wins:
-    print("X wins")
-elif o_wins:
-    print("0 wins")
-elif empty_count > 0:
-    print("Game not finished")
-else:
-    print("Draw")
+# Превращаем строку в список, чтобы можно было менять символы
+cells_list = list(cells)
+
+# Словарь для перевода координат (строка, столбец) в индекс строки от 0 до 8
+coord_map = {
+    ('1', '3'): 0, ('2', '3'): 1, ('3', '3'): 2,
+    ('1', '2'): 3, ('2', '2'): 4, ('3', '2'): 5,
+    ('1', '1'): 6, ('2', '1'): 7, ('3', '1'): 8
+}
+
+while True:
+    user_input = input("Enter the coordinates: ").split()
+
+    # Проверка: введены ли ровно 2 значения и являются ли они числами
+    if len(user_input) != 2 or not user_input[0].isdigit() or not user_input[1].isdigit():
+        print("You should enter numbers!")
+        continue
+
+    row, col = user_input[0], user_input[1]
+
+    # Проверка диапазона координат
+    if row not in ('1', '2', '3') or col not in ('1', '2', '3'):
+        print("Coordinates should be from 1 to 3!")
+        continue
+
+    index = coord_map[(row, col)]
+
+    # Проверка, занята ли клетка
+    if cells_list[index] != '_' and cells_list[index] != ' ':
+        print("This cell is occupied! Choose another one!")
+        continue
+
+    # Делаем ход (ставим 'X')
+    cells_list[index] = 'X'
+    break
+
+# Выводим обновленное поле
+print_field("".join(cells_list))
